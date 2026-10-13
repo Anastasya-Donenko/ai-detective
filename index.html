@@ -1,0 +1,292 @@
+<title>AI-Детектив — подай сайт на розслідування</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cousine:wght@700&family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#070A10;--card:#111825;--card2:#0E141E;
+  --line:rgba(255,255,255,.08);--line-strong:rgba(255,255,255,.15);
+  --tx:#EAF1F8;--tx-dim:#93A2B6;--tx-mute:#5F7085;
+  --tiff:#2FE0C7;--tiff-deep:#12B39C;--gold:#F0C255;--gold-deep:#C9960F;
+  --input-bg:#0B1020;--radius:18px;--maxw:700px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);overflow-x:hidden}
+body{
+  background:var(--bg);color:var(--tx);min-height:100vh;
+  font-family:'Manrope',system-ui,-apple-system,sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(520px 520px at 50% -8%,rgba(240,194,85,.13),transparent 65%),
+    radial-gradient(600px 380px at -10% 30%,rgba(47,224,199,.07),transparent 65%),
+    radial-gradient(700px 500px at 100% 110%,rgba(47,224,199,.08),transparent 65%);
+}
+/* легка сітка «доказової дошки» */
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:36px 36px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 20%,transparent 70%);mask-image:radial-gradient(ellipse at 50% 0%,#000 20%,transparent 70%);
+}
+h1{font-family:'Unbounded','Arial Black',sans-serif;font-weight:800;letter-spacing:-.03em;text-wrap:balance}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+/* ── Hero ── */
+.hero{padding:22px 0 16px;text-align:center}
+.lens{
+  width:52px;height:52px;margin:0 auto 10px;border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,rgba(47,224,199,.22),rgba(47,224,199,.04) 70%);
+  border:1px solid rgba(47,224,199,.35);box-shadow:0 0 30px -6px rgba(47,224,199,.45);
+}
+.lens{font-size:30px;line-height:1}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'Unbounded',sans-serif;font-weight:600;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  border:1px solid rgba(240,194,85,.35);border-radius:100px;padding:7px 14px;
+  background:rgba(240,194,85,.06);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);flex:none}
+.hero h1{font-size:clamp(28px,6.5vw,44px);line-height:1.07;margin:10px auto 0}
+.hero h1 .grad{
+  background:linear-gradient(105deg,var(--gold),var(--tiff));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;
+}
+.hero-sub{color:var(--tx-dim);font-size:clamp(15px,3.8vw,18px);max-width:46ch;margin:10px auto 0;line-height:1.6;text-wrap:pretty}
+.hero-sub b{color:var(--tx)}
+
+/* ── Card ── */
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  padding:22px 22px 20px;position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold),var(--tiff));border-radius:var(--radius) 0 0 var(--radius);
+}
+.card-head{display:flex;align-items:center;gap:9px;margin-bottom:16px}
+.card-icon{font-size:18px;line-height:1}
+.card-title{font-family:'Unbounded',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:-.02em}
+/* ── Папка «справа» ── */
+.case-top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.case-tab,.stamp{font-family:"Courier New","Cousine",ui-monospace,monospace;font-weight:700;text-transform:uppercase;white-space:nowrap}
+.case-tab{
+  position:relative;z-index:1;margin-bottom:-1px;
+  font-size:12px;letter-spacing:.2em;color:var(--tiff);
+  background:var(--card);border:1px solid var(--line-strong);border-bottom:0;
+  border-radius:10px 10px 0 0;padding:9px 16px 8px;
+}
+.stamp{
+  margin-bottom:8px;transform:rotate(-4deg);
+  font-size:12px;letter-spacing:.18em;color:var(--gold);
+  border:2px solid rgba(240,194,85,.75);border-radius:5px;padding:6px 10px;
+  background:rgba(240,194,85,.07);box-shadow:inset 0 0 0 1px rgba(240,194,85,.15);
+}
+.case .card{border-top-left-radius:0}
+
+/* ── Fields ── */
+.fields{display:flex;flex-direction:column;gap:11px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+.flabel{font-family:'Unbounded',sans-serif;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-mute);font-weight:700}
+.flabel .req{color:var(--gold);margin-left:2px}
+.finput,.ftextarea{
+  background:var(--input-bg);border:1px solid var(--line-strong);
+  border-radius:9px;color:var(--tx);
+  font-family:'Manrope',system-ui,sans-serif;font-size:14px;
+  padding:9px 12px;width:100%;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.finput::placeholder,.ftextarea::placeholder{color:var(--tx-mute)}
+.finput:focus,.ftextarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,194,85,.15)}
+.ftextarea{resize:none;height:84px}
+.ftextarea--links{height:62px}
+.char-hint{font-size:9px;color:var(--tx-mute);text-align:right;margin-top:2px;font-family:'Unbounded',sans-serif;letter-spacing:.04em}
+
+/* ── Footer ── */
+.form-bottom{display:flex;justify-content:flex-end;margin-top:14px}
+body{padding-bottom:16px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;
+  color:#0A0800;background:linear-gradient(180deg,var(--gold),var(--gold-deep));
+  padding:12px 24px;border-radius:100px;border:0;cursor:pointer;
+  box-shadow:0 10px 28px -8px rgba(240,194,85,.5);transition:transform .14s,opacity .14s;
+}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Status ── */
+.form-status{border-radius:10px;font-size:13px;padding:10px 14px;margin-top:16px;display:none;line-height:1.5}
+.form-status.err{display:block;background:rgba(248,113,113,.08);color:#F87171;border:1px solid rgba(248,113,113,.22)}
+
+/* ── Success screen ── */
+.success-screen{display:none;text-align:center;padding:32px 20px 28px;}
+.success-screen.show{display:block;}
+.success-icon{font-size:52px;line-height:1;margin-bottom:16px;}
+.success-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(20px,5vw,28px);letter-spacing:-.03em;margin-bottom:10px;}
+.success-title .grad{background:linear-gradient(105deg,var(--gold),var(--tiff));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;}
+.success-sub{color:var(--tx-dim);font-size:14px;line-height:1.65;max-width:40ch;margin:0 auto 24px;}
+.success-sub b{color:var(--tx);}
+.success-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(240,194,85,.3);border-radius:100px;padding:8px 16px;background:rgba(240,194,85,.06);}
+.success-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);flex:none;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  .hero{padding:14px 0 12px}
+  .lens{width:44px;height:44px;font-size:24px;margin-bottom:8px}
+  .hero h1{margin-top:8px}
+  .hero-sub{margin-top:6px}
+  .card{padding:18px 16px}
+  .case-tab{font-size:11px;letter-spacing:.14em;padding:8px 12px 7px}
+  .stamp{font-size:10.5px;letter-spacing:.12em;padding:5px 8px}
+  .field-row{grid-template-columns:1fr}
+  .form-bottom{justify-content:stretch}
+  .btn{justify-content:center;width:100%}
+  .eyebrow{font-size:8px;letter-spacing:.12em;padding:6px 12px;white-space:nowrap}
+}
+/* низькі екрани (iPhone SE, ноутбуки 700px) */
+@media(max-height:740px){
+  .hero{padding:12px 0 10px}
+  .lens{width:40px;height:40px;font-size:22px;margin-bottom:6px}
+  .hero h1{font-size:clamp(26px,6vw,36px);margin-top:6px}
+  .hero-sub{font-size:clamp(14.5px,3.9vw,16px);line-height:1.45}
+  .card{padding:16px 16px 16px}
+  .card-head{margin-bottom:10px}
+  .fields{gap:8px}
+  .finput,.ftextarea{padding:8px 11px}
+  .ftextarea{height:66px}
+  .ftextarea--links{height:56px}
+  .form-bottom{margin-top:10px}
+  .btn{padding:11px 22px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+*:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="lens">🕵️</div>
+    <span class="eyebrow"><span class="dot"></span>AI-Money&nbsp;Club</span>
+    <h1>AI-<span class="grad">Детектив</span></h1>
+    <p class="hero-sub">Подай свої сайти на розбір — детектив знайде, чому на них не купують. <b>Індекс підозрілості, голос клієнта, який пішов, і&nbsp;топ-3&nbsp;правки.</b></p>
+  </header>
+
+  <div class="case" id="formCard">
+  <div class="case-top">
+    <span class="case-tab">Справа № <span id="caseNo">001</span></span>
+    <span class="stamp">Справу відкрито</span>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <span class="card-icon">🎯</span>
+      <span class="card-title">Подати сайти на розбір</span>
+    </div>
+    <form id="qForm" novalidate>
+      <div class="fields">
+        <div class="field-row">
+          <div class="field">
+            <label class="flabel" for="fName">Ім'я <span class="req">*</span></label>
+            <input class="finput" type="text" id="fName" placeholder="Ім'я" maxlength="80" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label class="flabel" for="fContact">Телеграм <span class="req">*</span></label>
+            <input class="finput" type="text" id="fContact" placeholder="@username" maxlength="120" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel" for="fCase">Про що сайт <span class="req">*</span></label>
+          <textarea class="ftextarea" id="fCase" placeholder="Що продаєш і кому, що має зробити клієнт на сайті (заявка, покупка, запис)..." maxlength="1500" required></textarea>
+                  </div>
+        <div class="field">
+          <label class="flabel" for="fLink">Посилання на сайти — мінімум 2 <span class="req">*</span></label>
+          <textarea class="ftextarea ftextarea--links" id="fLink" placeholder="https://... &#10;https://...  (кожне з нового рядка)" maxlength="1000" required></textarea>
+        </div>
+      </div>
+      <div class="form-bottom">
+        <button type="submit" class="btn" id="submitBtn">
+          <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+          Надіслати сайти
+        </button>
+      </div>
+      <div class="form-status" id="qStatus" role="alert"></div>
+    </form>
+  </div>
+  </div>
+
+  <div class="card success-screen" id="successScreen">
+    <div class="success-icon">🕵️</div>
+    <div class="success-title">Справу <span class="grad">відкрито!</span></div>
+    <p class="success-sub">Детектив уже взяв твій сайт на замітку. <b>Скоро дізнаєшся, чому клієнти йдуть мовчки.</b></p>
+    <span class="success-badge"><span class="dot"></span>Розслідування триває</span>
+  </div>
+
+</div>
+
+<script>
+// Лічильник справ: номер «прокручується» від 001 до CASE_TARGET
+const CASE_TARGET = 128;
+(function(){
+  const el = document.getElementById('caseNo');
+  const fmt = n => String(n).padStart(3, '0');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = fmt(CASE_TARGET); return; }
+  const dur = 1800, start = performance.now() + 300;
+  function tick(now){
+    const t = Math.min(Math.max((now - start) / dur, 0), 1);
+    el.textContent = fmt(Math.max(1, Math.round(CASE_TARGET * (1 - Math.pow(1 - t, 3)))));
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh0jAzq8JooF4XMJSxxXpoQd1mK0DCS2n6AlpL2U4pdBc5bQuGqVQjK8GZWnOUMrr6Hw/exec';
+
+function submitToSheet(data) {
+  return fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  });
+}
+
+function showStatus(type, msg) {
+  const el = document.getElementById('qStatus');
+  el.className = 'form-status ' + type;
+  el.textContent = msg;
+}
+
+
+document.getElementById('qForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const caseText = document.getElementById('fCase').value.trim();
+  const name    = document.getElementById('fName').value.trim();
+  const contact = document.getElementById('fContact').value.trim();
+  const link    = document.getElementById('fLink').value.trim();
+
+  if (!name)     { showStatus('err', 'Вкажи своє ім\'я.'); document.getElementById('fName').focus(); return; }
+  if (!contact)  { showStatus('err', 'Вкажи Телеграм.'); document.getElementById('fContact').focus(); return; }
+  if (!caseText) { showStatus('err', 'Опиши, про що сайт.'); document.getElementById('fCase').focus(); return; }
+  const links = link.split(/[\s,;]+/).filter(s => /\.[a-zа-яіїєґ]{2,}/i.test(s));
+  if (links.length < 2) { showStatus('err', 'Додай мінімум 2 посилання на сайти, наприклад https://site.com — кожне з нового рядка.'); document.getElementById('fLink').focus(); return; }
+
+  const today = new Date().toLocaleDateString('uk-UA', {day:'2-digit', month:'2-digit', year:'numeric'});
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  submitToSheet({ date: today, name, contact, case: caseText, link });
+});
+</script>
